@@ -1,0 +1,60 @@
+[gd_scene load_steps=7 format=3 uid="uid://b3ieqcumf5qos"]
+
+[ext_resource type="Script" path="res://scenes/rigidbody_character.gd" id="1_phics"]
+[ext_resource type="Script" path="res://scenes/Gun.gd" id="2_rf7ko"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_8xl2d"]
+friction = 0.5
+
+[sub_resource type="Curve" id="Curve_2ww0l"]
+_data = [Vector2(0, 1), 0.0, -2.38242, 0, 0, Vector2(1, 0.00355327), -0.19653, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_guunm"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_nh0rq"]
+
+[node name="RigidbodyCharacter" type="RigidBody3D"]
+axis_lock_angular_x = true
+axis_lock_angular_y = true
+axis_lock_angular_z = true
+mass = 100.0
+physics_material_override = SubResource("PhysicsMaterial_8xl2d")
+can_sleep = false
+angular_damp_mode = 1
+script = ExtResource("1_phics")
+speed_curve = SubResource("Curve_2ww0l")
+normal_gravity_jump_velocity = 7
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_guunm")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_nh0rq")
+
+[node name="HeadYawAxis" type="Node3D" parent="."]
+unique_name_in_owner = true
+
+[node name="HeadPitchAxis" type="Node3D" parent="HeadYawAxis"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+
+[node name="Camera" type="Camera3D" parent="HeadYawAxis/HeadPitchAxis"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 0.999391, -0.0348995, 0, 0.0348995, 0.999391, 0, 0, 0)
+
+[node name="Gun" type="Node3D" parent="HeadYawAxis/HeadPitchAxis/Camera"]
+script = ExtResource("2_rf7ko")
+
+[node name="GunSpawnPoin" type="Node3D" parent="HeadYawAxis/HeadPitchAxis/Camera/Gun"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.365741, -0.555176)
+
+[node name="GunTimer" type="Timer" parent="HeadYawAxis/HeadPitchAxis/Camera/Gun"]
+wait_time = 0.25
+one_shot = true
+
+[node name="JumpTimer" type="Timer" parent="."]
+one_shot = true

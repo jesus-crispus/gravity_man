@@ -1,0 +1,64 @@
+[gd_scene load_steps=11 format=3 uid="uid://baeeox63lweh1"]
+
+[ext_resource type="Script" path="res://scripts/Projectile.gd" id="1_4axs5"]
+[ext_resource type="Script" path="res://addons/smoothing/smoothing.gd" id="2_p7dem"]
+
+[sub_resource type="Curve" id="Curve_kqqlv"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_cdqtm"]
+curve = SubResource("Curve_kqqlv")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_el52w"]
+gravity = Vector3(0, 0, 0)
+scale_min = 0.1
+scale_curve = SubResource("CurveTexture_cdqtm")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_w5u52"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_hrsqk"]
+material = SubResource("StandardMaterial3D_w5u52")
+radius = 0.063
+height = 0.125
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_bmxjn"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_bbw1n"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_7gl2x"]
+material = SubResource("StandardMaterial3D_bbw1n")
+radius = 0.1
+
+[node name="Projectile" type="RigidBody3D"]
+top_level = true
+collision_layer = 16
+collision_mask = 16
+input_ray_pickable = false
+mass = 1000.0
+continuous_cd = true
+contact_monitor = true
+script = ExtResource("1_4axs5")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 5.0
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+cast_shadow = 0
+amount = 20
+process_material = SubResource("ParticleProcessMaterial_el52w")
+draw_pass_1 = SubResource("SphereMesh_hrsqk")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_bmxjn")
+
+[node name="Smoothing" type="Node3D" parent="."]
+script = ExtResource("2_p7dem")
+flags = 15
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Smoothing"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("CapsuleMesh_7gl2x")
+skeleton = NodePath("../..")
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

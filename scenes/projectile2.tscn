@@ -1,0 +1,61 @@
+[gd_scene load_steps=10 format=3 uid="uid://br613028j205y"]
+
+[ext_resource type="Script" path="res://addons/smoothing/smoothing.gd" id="1_4yewo"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_8tgsh"]
+friction = 0.0
+
+[sub_resource type="Curve" id="Curve_kqqlv"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_cdqtm"]
+curve = SubResource("Curve_kqqlv")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_el52w"]
+gravity = Vector3(0, 0, 0)
+scale_min = 0.1
+scale_curve = SubResource("CurveTexture_cdqtm")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_w5u52"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_hrsqk"]
+material = SubResource("StandardMaterial3D_w5u52")
+radius = 0.063
+height = 0.125
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_bmxjn"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_685m4"]
+
+[node name="Projectile2" type="RigidBody3D"]
+top_level = true
+collision_layer = 8
+collision_mask = 25
+input_ray_pickable = false
+mass = 1000.0
+physics_material_override = SubResource("PhysicsMaterial_8tgsh")
+continuous_cd = true
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 5.0
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.341847, 0, 0)
+cast_shadow = 0
+amount = 20
+process_material = SubResource("ParticleProcessMaterial_el52w")
+draw_pass_1 = SubResource("SphereMesh_hrsqk")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("SphereShape3D_bmxjn")
+
+[node name="Smoothing" type="Node3D" parent="."]
+script = ExtResource("1_4yewo")
+flags = 15
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Smoothing"]
+mesh = SubResource("SphereMesh_685m4")
+skeleton = NodePath("../..")
+
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

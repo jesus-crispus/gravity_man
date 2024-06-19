@@ -1,0 +1,99 @@
+[gd_scene load_steps=11 format=3 uid="uid://b3ieqcumf5qos"]
+
+[ext_resource type="Script" path="res://scenes/rigidbody_character.gd" id="1_phics"]
+[ext_resource type="Script" path="res://scripts/Gun.gd" id="2_45cx5"]
+[ext_resource type="Resource" uid="uid://dqvekxcp6wp5r" path="res://resourses/ui_data_resourse.tres" id="2_uoslx"]
+[ext_resource type="Script" path="res://addons/smoothing/smoothing.gd" id="3_tcm6j"]
+[ext_resource type="Script" path="res://scripts/Gun2.gd" id="5_nor6p"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_8xl2d"]
+friction = 0.1
+
+[sub_resource type="Curve" id="Curve_2ww0l"]
+_data = [Vector2(0, 1), 0.0, -2.38242, 0, 0, Vector2(1, 0.00355327), -0.19653, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_j6yuu"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_04ryr"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_mmxsh"]
+
+[node name="RigidbodyCharacter" type="RigidBody3D"]
+collision_layer = 2
+collision_mask = 5
+axis_lock_angular_x = true
+axis_lock_angular_y = true
+axis_lock_angular_z = true
+mass = 100.0
+physics_material_override = SubResource("PhysicsMaterial_8xl2d")
+can_sleep = false
+lock_rotation = true
+continuous_cd = true
+max_contacts_reported = 10
+contact_monitor = true
+script = ExtResource("1_phics")
+speed_curve = SubResource("Curve_2ww0l")
+Ui_data = ExtResource("2_uoslx")
+zero_gravity_speed = 740
+normal_gravity_jump_velocity = 7
+zero_gravity_jump_velocity = 20
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+shape = SubResource("CapsuleShape3D_j6yuu")
+
+[node name="Smoothing" type="Node3D" parent="."]
+top_level = true
+script = ExtResource("3_tcm6j")
+target = NodePath("..")
+flags = 15
+
+[node name="HeadYawAxis" type="Node3D" parent="Smoothing"]
+unique_name_in_owner = true
+
+[node name="HeadPitchAxis" type="Node3D" parent="Smoothing/HeadYawAxis"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+
+[node name="Camera" type="Camera3D" parent="Smoothing/HeadYawAxis/HeadPitchAxis"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, 0.999391, -0.0348995, 0, 0.0348995, 0.999391, 0, 0, 0)
+
+[node name="Gun" type="Node3D" parent="Smoothing/HeadYawAxis/HeadPitchAxis/Camera"]
+script = ExtResource("2_45cx5")
+Newton_mode = false
+
+[node name="GunSpawnPoin" type="Node3D" parent="Smoothing/HeadYawAxis/HeadPitchAxis/Camera/Gun"]
+unique_name_in_owner = true
+
+[node name="GunTimer" type="Timer" parent="Smoothing/HeadYawAxis/HeadPitchAxis/Camera/Gun"]
+wait_time = 0.25
+one_shot = true
+
+[node name="Gun2" type="Node3D" parent="Smoothing/HeadYawAxis/HeadPitchAxis/Camera"]
+script = ExtResource("5_nor6p")
+Newton_mode = false
+
+[node name="GunSpawnPoin" type="Node3D" parent="Smoothing/HeadYawAxis/HeadPitchAxis/Camera/Gun2"]
+
+[node name="GunTimer" type="Timer" parent="Smoothing/HeadYawAxis/HeadPitchAxis/Camera/Gun2"]
+wait_time = 0.25
+one_shot = true
+
+[node name="ZeroGravityRaycast" type="ShapeCast3D" parent="Smoothing/HeadYawAxis/HeadPitchAxis/Camera"]
+unique_name_in_owner = true
+transform = Transform3D(1, 0, 0, 0, -4.47035e-08, 1, 0, -1, -4.47035e-08, 0, 0, 0)
+shape = SubResource("CapsuleShape3D_04ryr")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Smoothing"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_mmxsh")
+skeleton = NodePath("../..")
+
+[node name="JumpTimer" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
+[node name="GroundedTestingHight" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.247269, 0)

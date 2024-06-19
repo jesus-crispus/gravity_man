@@ -1,0 +1,7 @@
+[gd_resource type="Resource" script_class="Ui_data" load_steps=2 format=3 uid="uid://dqvekxcp6wp5r"]
+
+[ext_resource type="Script" path="res://scripts/ui_data_resourse_script.gd" id="1_diy14"]
+
+[resource]
+script = ExtResource("1_diy14")
+player_velocity = Vector3(0, 0, 0)

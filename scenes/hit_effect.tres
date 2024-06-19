@@ -1,0 +1,6 @@
+[gd_resource type="SphereMesh" load_steps=2 format=3 uid="uid://mvodi8kvguah"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_jbmjl"]
+
+[resource]
+material = SubResource("StandardMaterial3D_jbmjl")

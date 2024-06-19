@@ -1,0 +1,53 @@
+[gd_scene load_steps=7 format=3 uid="uid://e5qv8vntjjp1"]
+
+[ext_resource type="Script" path="res://addons/smoothing/smoothing.gd" id="1_yvl8b"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_ffqv2"]
+
+[sub_resource type="GDScript" id="GDScript_smngi"]
+script/source = "extends RigidBody3D
+
+
+# Called when the node enters the scene tree for the first time.
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	pass
+
+
+
+"
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_ukd0w"]
+size = Vector3(1, 2, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_7ogjj"]
+albedo_color = Color(0.445488, 0.445488, 0.445488, 1)
+metallic = 0.6
+roughness = 0.45
+
+[sub_resource type="BoxMesh" id="BoxMesh_a6w8e"]
+material = SubResource("StandardMaterial3D_7ogjj")
+size = Vector3(1, 2, 1)
+
+[node name="RigidBody3D" type="RigidBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.00444101, 0)
+collision_mask = 15
+mass = 1000.0
+physics_material_override = SubResource("PhysicsMaterial_ffqv2")
+script = SubResource("GDScript_smngi")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+shape = SubResource("BoxShape3D_ukd0w")
+
+[node name="Smoothing" type="Node3D" parent="."]
+script = ExtResource("1_yvl8b")
+target = NodePath("..")
+flags = 15
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Smoothing"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+mesh = SubResource("BoxMesh_a6w8e")
+skeleton = NodePath("../..")
